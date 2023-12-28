@@ -205,3 +205,67 @@ footer nav ul {
 	margin: 2em
 }
 
+
+
+
+
+.formu {
+	padding-top: 100px;
+}
+.titre {
+	display: flex;
+	justify-content: center;
+	padding-bottom: 36px;
+} 
+.formulaire {
+	max-width: 300px;
+	margin: 0 auto;
+}
+
+.formulaire label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.formulaire input {
+	width: 100%;
+	padding: 8px;
+	margin-bottom: 16px;
+	box-sizing: border-box;
+	border: none;
+	-webkit-box-shadow: -7px 6px 19px -12px rgba(0,0,0,0.75);
+}
+
+#button {
+    display: flex;
+    margin: 0 auto;
+    border: none;
+    background-color: #1D6154;
+    color: white;
+    padding: 7px 48px;
+    border-radius: 30px;
+    margin-top: 10px;
+	font-size: 16px;
+}
+
+.forgot_password {
+	display: flex;
+    justify-content: center;
+    color: black;
+    margin-top: 26px;
+}
+
+li a {
+	text-decoration: none;
+	color: black;
+}
+
+li a:hover {
+	color: #B1663C;
+}
+#error {
+	color: red;
+
+}
+

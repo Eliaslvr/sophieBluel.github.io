@@ -2,15 +2,13 @@ const gallery = () =>  document.querySelector('.gallery');
 
 async function fetchWorks() {
     let response = await fetch("http://localhost:5678/api/works")
-    // .then(data => data.json());
-    console.log(response);
     return await response.json();
 }
 
 let works = [];
 
 async function buildGallery(works) {
-    console.log(works);
+    // console.log(works);
     gallery().innerHTML = "";
 
    for(let affiche of works) {
