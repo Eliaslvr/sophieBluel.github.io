@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })  
 
         if (fetchAwait.ok) {
-            // window.location.href = "../../index.html";
             let data = await fetchAwait.json()
             console.log(data);
             if (data && data.token) { //si data existe et que data.token existe dans data
@@ -64,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(token);
                 localStorage.setItem('token', token)
                 localStorage.getItem(token)
+                window.location.href = "../../index.html";
             
                 // Faites ce que vous devez faire avec le token ici
             } 

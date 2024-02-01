@@ -8,7 +8,6 @@ async function fetchWorks() {
 let works = [];
 
 async function buildGallery(works) {
-    // console.log(works);
     gallery().innerHTML = "";
 
    for(let affiche of works) {
@@ -58,6 +57,7 @@ async function setElement() {
 
 setElement()
 
+
 //    const objetSelect = document.querySelector('.objetSelect');
 
 //    const category = works.map(categorie => categorie.categoryId)
@@ -88,3 +88,92 @@ setElement()
 //             }
 //         }
 //     })
+
+const token = localStorage.getItem('token');
+
+if (token) {
+    let loginButon = document.getElementById('loginButton');
+    loginButon.innerHTML = 'Logout'
+    let header_login = document.createElement('div');
+    header_login.className = 'header_login';
+    header_login.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>' +
+                        '<p>Mode édition</p>';
+                        document.body.insertBefore(header_login, document.body.firstChild);
+
+    const header = document.querySelector('header');
+    const main = document.querySelector('main');
+    const footer = document.querySelector('footer');
+    const body = document.querySelector('body');
+    
+    body.style = 'max-width: none; background-color: white;';
+    header.style = 'max-width: 1140px; margin: 50px auto;';
+    main.style = 'max-width: 1140px; margin: 0px auto;';
+    footer.style = 'max-width: 1140px; margin: 0px auto;';
+
+    let projetPortfolio = document.getElementById("portfolio");
+    let projet = projetPortfolio.querySelector('h2');
+    projet.innerHTML = `Mes Projets <a href=#modale class='modify'>modifier</a>`
+    let projetH2 = projet.querySelector('a');
+    let modale = document.getElementById('modale')
+
+    projetH2.addEventListener("click", (e) => {
+        e.preventDefault();   
+        if (modale) {
+            modale.style.display = null
+            body.style = 'background-color: rgba(0, 0, 0, 0.3);';
+        } else {
+            body.style = 'background-color: white;';
+        }
+    }) 
+    
+
+    let cross = document.querySelector(".cross");
+    // cross.addEventListener('click', (e) => {
+    //     e.preventDefault();
+    //     console.log(body.style.background);
+    //     body.style = 'background-color: red;'
+    // })
+    
+    // cross.addEventListener('click', (event) => {
+    //     if (event.target == cross ) {
+    //         modale.style.display = "none";
+    //     //body.style = 'max-width: none; background-color: white;';
+    //         body.style = 'max-width: none; background-color: white;';
+    //     }
+    //     // modale.style.display = "none";
+    //     // //body.style = 'max-width: none; background-color: white;';
+    //     // body.style = 'max-width: none; background-color: white;';
+    //     console.log(body);
+
+    // })
+
+    cross.addEventListener('click', (event) => {
+        event.preventDefault();
+        modale.style.display = 'none';
+        body.style = 'max-width: none;';
+        body.style.backgroundColor = 'white;';
+    })
+    
+    window.addEventListener('click', function (event) {
+        let modaleElement = document.querySelector('.modaleElement')
+        // event.preventDefault();
+        // if (event.target == modale) {
+        //     modale.style.display = 'none';
+        //     body.style = 'max-width: none; background-color: white;';
+        // } else {
+        //     body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
+        // }
+        if (event.target == modaleElement) {
+            modale.style.display = 'none';
+            body.style = 'max-width: none; background-color: white;';
+        }
+    });
+
+    // document.querySelector('.projets').style = 'display: none;'
+
+    // loginButon.addEventListener('click', (e) => {
+    //     localStorage.clear()
+    //     window.location.reload()
+    // })
+
+}
