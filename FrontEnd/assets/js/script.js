@@ -47,7 +47,6 @@ async function setElement() {
                
 
             objet.addEventListener("click", function() {
-                console.log(this.dataset);
                 let affiche = works.filter(element => categorie.id == element.categoryId)
                 buildGallery(affiche)
             })
@@ -56,38 +55,6 @@ async function setElement() {
 }
 
 setElement()
-
-
-//    const objetSelect = document.querySelector('.objetSelect');
-
-//    const category = works.map(categorie => categorie.categoryId)
-
-//    const filterObjets = category.filter(obj => obj == 1);
-//    console.log(filterObjets);
-
-//    const filterAppartement = category.filter(obj => obj == 2);
-//    console.log(filterAppartement);
-//    const filterHotel = category.filter(obj => obj == 3);
-//    console.log(filterHotel);
-
-//    objetSelect.addEventListener("click", () => {
-//     if(filterAppartement) {
-//         filterAppartement.remove();
-//     } if (filterHotel) {
-//         filterHotel.remove();
-//     }
-//    })
-
-//    objetSelect.addEventListener("click", () => {
-//         const category = works.map(categorie => categorie.categoryId)
-//         // console.log(category);
-//         for(let i = category.lenght -1; i>=0; i++) {
-//             if (category[i] = 1) {
-//                 category.splice(i,1);
-//                 console.log(category);
-//             }
-//         }
-//     })
 
 const token = localStorage.getItem('token');
 
@@ -128,24 +95,6 @@ if (token) {
     
 
     let cross = document.querySelector(".cross");
-    // cross.addEventListener('click', (e) => {
-    //     e.preventDefault();
-    //     console.log(body.style.background);
-    //     body.style = 'background-color: red;'
-    // })
-    
-    // cross.addEventListener('click', (event) => {
-    //     if (event.target == cross ) {
-    //         modale.style.display = "none";
-    //     //body.style = 'max-width: none; background-color: white;';
-    //         body.style = 'max-width: none; background-color: white;';
-    //     }
-    //     // modale.style.display = "none";
-    //     // //body.style = 'max-width: none; background-color: white;';
-    //     // body.style = 'max-width: none; background-color: white;';
-    //     console.log(body);
-
-    // })
 
     cross.addEventListener('click', (event) => {
         event.preventDefault();
@@ -169,11 +118,10 @@ if (token) {
         }
     });
 
-    // document.querySelector('.projets').style = 'display: none;'
+    document.querySelector('.projets').style = 'display: none;'
 
-    // loginButon.addEventListener('click', (e) => {
-    //     localStorage.clear()
-    //     window.location.reload()
-    // })
-
+    loginButon.addEventListener('click', (e) => {
+        localStorage.clear()
+        window.location.reload()
+    })
 }

@@ -1,16 +1,4 @@
-// let projetPortfolio = document.getElementById("portfolio");
-// let projet = projetPortfolio.querySelector('h2');
-// projet.innerHTML = `Mes Projets <a href=#modale class='mofidy'>modifier</a>`
-// let projetH2 = projet.querySelector('a');
 let modale = document.getElementById('modale')
-
-// let modale = document.createElement('aside');
-// modale.id = 'modale';
-// projetPortfolio.appendChild(modale)
-
-// let divProjets = projetPortfolio.querySelector('.projets');
-// // Ajoutez la nouvelle div juste avant la div "projets"
-// projetPortfolio.insertBefore(modale, divProjets);
 
 //Coder l'intérieur du modale
 let modaleElement = document.createElement('div');
@@ -54,12 +42,6 @@ async function fetchWorksModale() {
     return await response.json();
 }
 
-modify.addEventListener("click", () => {
-    titleInModale();
-    buildGalleryModale();
-    buttonModale();
-})
-
 async function buildGalleryModale() {
     let work = await fetchWorksModale()
     if (blockInModale) {
@@ -75,13 +57,18 @@ async function buildGalleryModale() {
        }
        fetchBin();
     }
-    //fetchBin();
 };
 
 
  function buttonModale() {
     buttonAjout.innerHTML = 'Ajouter une photo'
 }
+
+modify.addEventListener("click", () => {
+    titleInModale();
+    buildGalleryModale();
+    buttonModale();
+})
 
 async function fetchBin() {
     const bin = document.querySelectorAll('span.bin');
@@ -100,25 +87,61 @@ async function fetchBin() {
                 }
                 
             await fetch(`http://localhost:5678/api/works/${dataId}`, init)
+            .then(response => {
+                response.json()})
             })
                 
         })
     }
 
-buttonAjout.addEventListener('click', () => {
+const clickArrow = document.createElement('a');
+//clickArrow.classList.add('clickArrow');
+
+function nextModale() {
+    modale.appendChild(clickArrow);
+    const arrowLeft = document.createElement('i');
+    arrowLeft.classList.add('fas','fa-arrow-left', 'arrow');
+    clickArrow.appendChild(arrowLeft);
+    modale.insertBefore(clickArrow, modale.firstChild)
     titleModale.innerHTML = 'Ajout photo';
-    blockInModale.innerHTML = ` <div></div>
-                                <div>
+    blockInModale.innerHTML = `<div class='ajoutPhoto'>
+                                    <i class='far fa-image'></i>
+                                    <button>+ Ajouter photo</button>
+                                    <p>jpg, png : 4mo max</p>
+                                </div>
+                                <div class='emplacement'>
                                     <p>Titre</p>
                                     <input type="text">
                                 </div>
-                                <div>
+                                <div class='emplacement'>
                                     <p>Catégorie</p>
                                     <input type="text">
                                 </div>`
     buttonAjout.innerHTML = 'Valider'
     buttonAjout.classList.remove('buttonAjout')
     buttonAjout.classList.add('valider')
+}
+
+buttonAjout.addEventListener('click', () => {
+    nextModale();
+    clickArrow.style.display = 'flex';
+})
+
+clickArrow.addEventListener('click', () => {
+    titleInModale();
+    buildGalleryModale();
+    buttonModale();
+    clickArrow.style.display = 'none';
+    buttonAjout.classList.remove('valider')
+    buttonAjout.classList.add('buttonAjout');
+})
+
+const cross = document.querySelector('.cross');
+
+cross.addEventListener('click', () => {
+    buttonAjout.classList.remove('valider')
+    buttonAjout.classList.add('buttonAjout');
+    clickArrow.style.display = 'none';
 })
 
 // function fetchBin() {
