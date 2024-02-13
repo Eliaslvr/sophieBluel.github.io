@@ -22,20 +22,17 @@ blockInModale.classList.add('blockInModale');
 inModale.appendChild(blockInModale)
 
 //Creation du boutton
-let buttonInModale = document.createElement('div');
-buttonInModale.classList.add('buttonInModale');
-inModale.appendChild(buttonInModale);
+// let buttonInModale = document.createElement('div');
+// buttonInModale.classList.add('buttonInModale');
+// inModale.appendChild(buttonInModale);
 let buttonAjout = document.createElement('button');
 buttonAjout.classList.add('buttonAjout');
-buttonInModale.appendChild(buttonAjout);
+inModale.appendChild(buttonAjout);
 
 
 function titleInModale() {
-    //let inModaleClass = document.querySelector('.inModale')
     titleModale.innerHTML = "Galerie photo";
 }
-
-let modify = document.querySelector(".modify");
 
 async function fetchWorksModale() {
     let response = await fetch("http://localhost:5678/api/works")
@@ -64,6 +61,8 @@ async function buildGalleryModale() {
     buttonAjout.innerHTML = 'Ajouter une photo'
 }
 
+let modify = document.querySelector(".modify");
+
 modify.addEventListener("click", () => {
     titleInModale();
     buildGalleryModale();
@@ -75,14 +74,15 @@ async function fetchBin() {
     const token = localStorage.getItem('token');
     bin.forEach(trash => {
         trash.addEventListener('click', async (e) => {
+            e.preventDefault();
             const dataId = trash.getAttribute('data-id');
             console.log(dataId);
 
             const init = {
                     method: 'DELETE',
                     headers: {
-                    Authorization: `${token}`,
-                    'Content-Type': 'application/json'
+                    Authorization: `Bearer ${token}`,
+                    //'Content-Type': 'application/json'
                     }
                 }
                 
@@ -90,182 +90,256 @@ async function fetchBin() {
             .then(response => {
                 response.json()})
             })
-                
         })
+        return false;
     }
 
 const clickArrow = document.createElement('a');
-//clickArrow.classList.add('clickArrow');
 
 function nextModale() {
-    modale.appendChild(clickArrow);
+    //const newForm = document.createElement('form');!
+    //newForm.id = 'newForm'!
+    // newForm.classList.add('newForm');
+    //modaleElement.appendChild(newForm)!
+    //newForm.appendChild(inModale)!
+    // newForm.appendChild(inModale);
+    //document.body.appendChild(newForm);
+
+    inModale.appendChild(clickArrow);
     const arrowLeft = document.createElement('i');
     arrowLeft.classList.add('fas','fa-arrow-left', 'arrow');
     clickArrow.appendChild(arrowLeft);
     modale.insertBefore(clickArrow, modale.firstChild)
     titleModale.innerHTML = 'Ajout photo';
+
     blockInModale.innerHTML = `<div class='ajoutPhoto'>
                                     <i class='far fa-image'></i>
-                                    <button>+ Ajouter photo</button>
+                                    <input type='file' id='image' name='image'>
+                                        <label class='labelFile' for="image">+ Ajouter photo</label>
                                     <p>jpg, png : 4mo max</p>
                                 </div>
                                 <div class='emplacement'>
                                     <p>Titre</p>
-                                    <input type="text">
+                                    <input type="text" id='title' name='title'>
                                 </div>
                                 <div class='emplacement'>
                                     <p>Catégorie</p>
-                                    <input type="text">
+                                    <input type="text" id='category' name='category'>
+                                    <ul class='deroulant'>
+                                        <li><a href='#' id='1'>Objets</a></li>
+                                        <li><a href='#' id='2'>Appartements</a></li>
+                                        <li><a href='#' id='3'>Hôtels & restaurants</a></li>
+                                    </ul>
                                 </div>`
-    buttonAjout.innerHTML = 'Valider'
-    buttonAjout.classList.remove('buttonAjout')
-    buttonAjout.classList.add('valider')
+    buttonAjout.remove()
+    // buttonAjout.innerHTML = 'Valider';
+    // buttonAjout.classList.remove('buttonAjout');
+    // buttonAjout.classList.add('valider');
+    // buttonAjout.setAttribute("type", "button");
+    const deroulant = document.querySelector('.deroulant');
+    deroulant.style.display = 'none';
+    const buttonValider = document.createElement('button');
+    buttonValider.classList.add('valider');
+    buttonValider.innerHTML = 'valider'
+    inModale.appendChild(buttonValider);
 }
 
-buttonAjout.addEventListener('click', () => {
+buttonAjout.addEventListener('click', (e) => {
+    e.preventDefault();
     nextModale();
-    clickArrow.style.display = 'flex';
+
+    const ajoutPhoto = document.querySelector('.ajoutPhoto');
+    const image = document.getElementById('image');
+
+    //onchange se produit lorsque la valeur de l'HTML est modifiée
+    image.onchange = function(e) {
+        //"file" fournit des informations sur les fichiers et permet à JavaScript dans une page Web d'accéder à son contenu.
+        const file = e.target.files[0];
+        //FileReader permet à des applications web de lire le contenu de fichiers 
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            ajoutPhoto.innerHTML = '';
+            const modifPhoto = document.createElement('img');
+            modifPhoto.classList.add('modifPhoto');
+            ajoutPhoto.appendChild(modifPhoto)
+            modifPhoto.src = e.target.result;
+            modifPhoto.alt = e.target.result;
+            ajoutPhoto.style.padding = '0'
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    const buttonValider = document.querySelector('.valider');
+
+    buttonValider.addEventListener('click', () => {
+        const token = localStorage.getItem('token');
+
+        const modifPhoto = document.querySelector('.modifPhoto');
+        const image =  modifPhoto.getAttribute('src', 'alt');
+        const title = document.getElementById('title').value;
+        const category = document.getElementById('category').value;
+
+        console.log("valeur", {image, title, category});
+        const valeurFinal = {
+            image,
+            title,
+            category
+        }
+
+        console.log(valeurFinal);
+
+        fetch('http://localhost:5678/api/works', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: valeurFinal,
+            })
+                .then(res => res.json())
+                .then(res => console.log(res))        
+    })
+    clickArrow.style.display = 'flex'
 })
+
+// buttonAjout.addEventListener('click', (e) => {
+//     e.preventDefault();
+//     //const newFormClass = document.querySelector('#newForm');
+//     const inModale = document.querySelector('.inModale');
+//     if (inModale == null) {
+//         nextModale();
+//     } else {
+//     //const newFormClass = document.querySelector('#newForm');
+//     //newFormClass.addEventListener('click', (e) => {
+//         e.preventDefault();
+//         // const token = localStorage.getItem('token');
+//         // const formData = new FormData(newFormClass);
+//         // const valueImage = formData.get('image');
+//         // const valueTitle = formData.get('title');
+//         // const valueCategory = formData.get('category');
+//         // console.log('form', {valueImage, valueTitle, valueCategory});
+
+//         // const valueImage = document.querySelector('.labelFile').value;
+//         // const valueTitle = document.getElementById('valueTitle').value;
+//         // const valueCategory = document.getElementById('valueCategory').value;
+
+//         const modale = document.getElementById('modale');
+//         const body = document.querySelector('body')
+//         modale.style.display = 'none';
+//         body.style.backgroundColor = 'white;';
+
+//             fetch('http://localhost:5678/api/works', {
+//                 method: 'POST',
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//                 body: inModale,
+//             })
+//                 .then(res => res.json())
+//                 .then(res => console.log(res))
+//         }
+
+//     clickArrow.style.display = 'flex'
+//     }
+// )
+
+const valueCategory = document.querySelector('.valueCategory');
+
+// function toggleDropdown(){
+//     const deroulant = document.querySelector('.deroulant');
+//     if (deroulant.style.display = 'none') {
+//         deroulant.style.display = 'block';
+//     } else {
+//         deroulant.style.display = 'none'
+//     }
+// }
+
+        //const valider = document.querySelector('.valider');
+
+        // function addMovie(e) {
+        //     e.preventDefault();
+        //     const formData = new FormData(newFormClass);
+        //     console.log(formData);
+        //     const valueTitle = formData.get('valueTitle');
+        //     console.log(valueTitle);
+        // }
+
+        // const titleValue = document.querySelector('#valueTitle');
+        // const valueCategory = document.querySelector('#valueCategory');
+        
+        // valider.addEventListener('click', (e) => {
+        //     e.preventDefault();
+        //     const formData = new FormData(newFormClass);
+        // })
+    
+
+
 
 clickArrow.addEventListener('click', () => {
     titleInModale();
     buildGalleryModale();
     buttonModale();
     clickArrow.style.display = 'none';
-    buttonAjout.classList.remove('valider')
-    buttonAjout.classList.add('buttonAjout');
+    
+    const buttonValider = document.querySelector('.valider');
+    buttonValider.remove();
+    inModale.appendChild(buttonAjout);
+    // buttonAjout.classList.remove('valider')
+    // buttonAjout.classList.add('buttonAjout');
+    modaleElement.classList.remove('modaleElementAjout');
+    modaleElement.classList.add('modaleElement');
+
+    //supprimer form newForm pour re afficher la div inModale
+    // const newFormClass = document.querySelector('#newForm');
+    // newFormClass.remove();
+    modaleElement.appendChild(inModale);
 })
 
 const cross = document.querySelector('.cross');
 
 cross.addEventListener('click', () => {
-    buttonAjout.classList.remove('valider')
-    buttonAjout.classList.add('buttonAjout');
+    const buttonValider = document.querySelector('.valider');
+    buttonValider.remove();
+    inModale.appendChild(buttonAjout);
+    //buttonAjout.classList.remove('valider')
+    //buttonAjout.classList.add('buttonAjout');
+    modaleElement.classList.remove('modaleElementAjout');
     clickArrow.style.display = 'none';
+
+    // const newFormClass = document.querySelector('#newForm');
+    // newFormClass.remove();
+    modaleElement.appendChild(inModale);
 })
 
-// function fetchBin() {
+// const newFormClass = document.querySelector('.newForm');
+// newFormClass.addEventListener('submit', addMovie);
 
-//     let bin = document.querySelectorAll('span.bin');    
-
-//     let arrayBin = Array.from(bin);
-
-//     arrayBin.forEach(element => {
-//         element.addEventListener('click', () => {
-
-//             // let divsAvecDataCategory = document.querySelectorAll('div[data-category]');
-//             // console.log(divsAvecDataCategory);
-
-//             let modaleElementAffiche = document.querySelectorAll('.modaleElementAffiche');
-
-//             modaleElementAffiche.forEach(function(modaleElementAffiche) {
-//                 modaleElementAffiche.addEventListener('click', function() {
-//                     let dataCategory = modaleElementAffiche.querySelector('div').getAttribute('data-category');
-//                     console.log("id = " + dataCategory);
-//                     // const apiUrl = `http://localhost:5678/api/works/`;
-
-//                     // fetch(apiUrl)
-//                     // .then(response => response.json())
-//                     // .then(data => {
-//                     //     for (let i = 0; i < data.lenght; i++) {
-//                     //         const element = data[i]
-//                     //         console.log("ID:", element.id);
-//                     //     }
-//                     // })
-
-//                     const apiFetch = fetch(`http://localhost:5678/api/works`)
-//                     .then((response) => {
-//                         return response.json()
-//                     })
-//                     .then((data) => {
-//                         console.log(data);
-//                         for (let id of data) {
-//                             //console.log(id.id);
-//                         }
-//                         for (let i = 0; i < data; i++) {
-//                             let element = data[i]
-//                             console.log(element);
-//                             console.log("ID:", element.id);
-//                         }
-//                     })
-
-//                     const init = {
-//                         method: 'DELETE',
-//                         headers: {
-    //                      token
-//                         'Content-Type': 'application/json'
-//                         }
-//                     }
-//                     // fetch(`http://localhost:5678/api/works/` +dataCategory,init)
-//                     // .then(response => {
-//                     //     if(!response.ok) {
-//                     //         console.log("Delete échoué");
-//                     //     }
-//                     //     return response.json()
-//                     // })
-//                     // .then((data) => {
-//                     //     console.log("Delete reussi",data)
-//                     // })
-//                 });
-//             });
-
-//             // let arrayElement = Array.from(modaleElementAffiche)
-//             // console.log(arrayElement);
-
-            
-//             // arrayElement.forEach(elementArray => {
-//             //     console.log(elementArray);
-//             //     let dataCategory = elementArray.querySelector('div').getAttribute('data-category')
-//             //     console.log(dataCategory);
-//             // })
-
-//             // let dataCategory = modaleElementAffiche.querySelector('div').getAttribute('data-category')
-//             // console.log(dataCategory);
-
-
-//                 // Récupérer la valeur de l'attribut data-category pour chaque div
-//                 //let valeurDataCategory = divsAvecDataCategory.dataset.category;
-            
-//                 // Afficher la valeur dans la console
-//                 //console.log(valeurDataCategory);
-
-//             // var maDiv = document.querySelectorAll("maDiv");
-//             // var valeurDataCategory = maDiv.dataset.category;
-//             // console.log(valeurDataCategory);
-
-//             // const urlParams = new URLSearchParams(window.location.search);
-//             // const id = urlParams.get('id');
-//             //fetch(`http://localhost:5678/api/users/works/{id}?category=${category}`)
-            
-
-//             // const postBin = {
-//             //     method: 'POST',
-//             //     headers: {
-//             //       'Content-Type': 'application/json'
-//             //     },
-//             //     body: JSON.stringify(arrayBin) // Convertit les données en format JSON
-//             //   };
-//         });
-//     });
+// function addMovie(e) {
+//     e.preventDefault();
+//     const formData = new FormData(newFormClass);
+//     const titleData = formData.get('title');
+//     console.log('title', titleData);
 // }
 
-//document.addEventListener('DOMContentLoaded', async function () {
-    //     await titleInModale();   // Afficher titleModale() en premier
-    //     await buildGalleryModale(); // Attendre la construction de la galerie
-    //     buttonModale();  // Afficher buttonModale() en dernier
-    // });
 
-// async function render() {
-//     await titleInModale();
-//     buildGalleryModale();
-//     buttonModale();
-// }
-// render();
+// newFormClass.addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     const valueTitle = document.querySelector('.valueTitle').value
+//     console.log(valueTitle);
+// })
 
 
 
 
 
-// Insertion du bouton après l'élément avec la classe "modaleElementAffiche"
-//modaleElementAffiche.parentNode.insertBefore(buttonAjout, modaleElementAffiche.nextSibling);
+
+
+// form.addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     const titleValue = document.querySelector('valueTitle').value;
+//     const valueCategory = document.querySelector('valueCategory').value;
+// });
+
+
 

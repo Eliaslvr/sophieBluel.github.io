@@ -71,6 +71,17 @@ if (token) {
     const main = document.querySelector('main');
     const footer = document.querySelector('footer');
     const body = document.querySelector('body');
+    // let figure = document.querySelectorAll('figure');
+    // const images = document.querySelectorAll('img');
+
+    // figure.forEach(figures => {
+    //     console.log(figures);
+    // })
+
+    // images.forEach(image => {
+    //     console.log(image);
+    // })
+    
     
     body.style = 'max-width: none; background-color: white;';
     header.style = 'max-width: 1140px; margin: 50px auto;';
@@ -87,7 +98,8 @@ if (token) {
         e.preventDefault();   
         if (modale) {
             modale.style.display = null
-            body.style = 'background-color: rgba(0, 0, 0, 0.3);';
+            body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
+            
         } else {
             body.style = 'background-color: white;';
         }
@@ -103,20 +115,20 @@ if (token) {
         body.style.backgroundColor = 'white;';
     })
     
-    window.addEventListener('click', function (event) {
-        let modaleElement = document.querySelector('.modaleElement')
-        // event.preventDefault();
-        // if (event.target == modale) {
-        //     modale.style.display = 'none';
-        //     body.style = 'max-width: none; background-color: white;';
-        // } else {
-        //     body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
-        // }
-        if (event.target == modaleElement) {
-            modale.style.display = 'none';
-            body.style = 'max-width: none; background-color: white;';
-        }
-    });
+    // window.addEventListener('click', function (event) {
+    //     let modaleElement = document.querySelector('.modaleElement')
+    //     // event.preventDefault();
+    //     // if (event.target == modale) {
+    //     //     modale.style.display = 'none';
+    //     //     body.style = 'max-width: none; background-color: white;';
+    //     // } else {
+    //     //     body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
+    //     // }
+    //     if (event.target == modaleElement) {
+    //         modale.style.display = 'none';
+    //         body.style = 'max-width: none; background-color: white;';
+    //     }
+    // });
 
     document.querySelector('.projets').style = 'display: none;'
 
