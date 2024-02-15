@@ -97,11 +97,11 @@ async function fetchBin() {
 const clickArrow = document.createElement('a');
 
 function nextModale() {
-    //const newForm = document.createElement('form');!
-    //newForm.id = 'newForm'!
+    const newForm = document.createElement('form');
+    newForm.id = 'newForm'
     // newForm.classList.add('newForm');
-    //modaleElement.appendChild(newForm)!
-    //newForm.appendChild(inModale)!
+    modaleElement.appendChild(newForm)
+    newForm.appendChild(inModale);
     // newForm.appendChild(inModale);
     //document.body.appendChild(newForm);
 
@@ -124,32 +124,95 @@ function nextModale() {
                                 </div>
                                 <div class='emplacement'>
                                     <p>Catégorie</p>
-                                    <input type="text" id='category' name='category'>
-                                    <ul class='deroulant'>
-                                        <li><a href='#' id='1'>Objets</a></li>
-                                        <li><a href='#' id='2'>Appartements</a></li>
-                                        <li><a href='#' id='3'>Hôtels & restaurants</a></li>
-                                    </ul>
+                                    <label type="text" id='category' name='category'>
+                                    <select class="select" name="select">
+                                        <option value=""></option>
+                                        <option value="objets" id="1">Objets</option>
+                                        <option value="appartements" id="2">Appartements</option>
+                                        <option value="hotel" id="3">Hotels & restaurants</option>
+                                    </select>
                                 </div>`
-    buttonAjout.remove()
-    // buttonAjout.innerHTML = 'Valider';
-    // buttonAjout.classList.remove('buttonAjout');
-    // buttonAjout.classList.add('valider');
+    //buttonAjout.remove()
+    buttonAjout.innerHTML = 'Valider';
+    buttonAjout.classList.remove('buttonAjout');
+    buttonAjout.classList.add('valider');
     // buttonAjout.setAttribute("type", "button");
-    const deroulant = document.querySelector('.deroulant');
-    deroulant.style.display = 'none';
-    const buttonValider = document.createElement('button');
-    buttonValider.classList.add('valider');
-    buttonValider.innerHTML = 'valider'
-    inModale.appendChild(buttonValider);
+    // const deroulant = document.querySelector('.deroulant');
+    // deroulant.style.display = 'none';
+    //const buttonValider = document.createElement('button');
+    // buttonValider.classList.add('valider');
+    // buttonValider.innerHTML = 'valider'
+    // inModale.appendChild(buttonValider);
 }
 
-buttonAjout.addEventListener('click', (e) => {
-    e.preventDefault();
-    nextModale();
+// buttonAjout.addEventListener('click', (e) => {
+//     e.preventDefault();
+//     nextModale();
 
+//     const ajoutPhoto = document.querySelector('.ajoutPhoto');
+//     const image = document.getElementById('image');
+
+//     //onchange se produit lorsque la valeur de l'HTML est modifiée
+//     image.onchange = function(e) {
+//         //"file" fournit des informations sur les fichiers et permet à JavaScript dans une page Web d'accéder à son contenu.
+//         const file = e.target.files[0];
+//         //FileReader permet à des applications web de lire le contenu de fichiers 
+//         const reader = new FileReader();
+
+//         reader.onload = function(e) {
+//             ajoutPhoto.innerHTML = '';
+//             const modifPhoto = document.createElement('img');
+//             modifPhoto.classList.add('modifPhoto');
+//             ajoutPhoto.appendChild(modifPhoto)
+//             modifPhoto.src = e.target.result;
+//             modifPhoto.alt = e.target.result;
+//             ajoutPhoto.style.padding = '0'
+//         };
+
+//         reader.readAsDataURL(file);
+//     }
+
+//     const buttonValider = document.querySelector('.valider');
+
+//     buttonValider.addEventListener('click', () => {
+//         const token = localStorage.getItem('token');
+
+//         const modifPhoto = document.querySelector('.modifPhoto');
+//         const image =  modifPhoto.getAttribute('src', 'alt');
+//         const title = document.getElementById('title').value;
+//         const category = document.getElementById('category').value;
+
+//         console.log("valeur", {image, title, category});
+//         const valeurFinal = {
+//             image,
+//             title,
+//             category
+//         }
+
+//         console.log(valeurFinal);
+
+//         fetch('http://localhost:5678/api/works', {
+//                 method: 'POST',
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//                 body: JSON.stringify({
+//                     image: image,
+//                     title: title,
+//                     category: category
+//                 }),
+//             })
+//                 .then(res => res.json())
+//                 .then(res => console.log(res))        
+//     })
+//     clickArrow.style.display = 'flex'
+// })
+
+function showImage() {
     const ajoutPhoto = document.querySelector('.ajoutPhoto');
+    console.log(ajoutPhoto);
     const image = document.getElementById('image');
+    console.log(image);
 
     //onchange se produit lorsque la valeur de l'HTML est modifiée
     image.onchange = function(e) {
@@ -170,79 +233,48 @@ buttonAjout.addEventListener('click', (e) => {
 
         reader.readAsDataURL(file);
     }
+}
 
-    const buttonValider = document.querySelector('.valider');
-
-    buttonValider.addEventListener('click', () => {
+buttonAjout.addEventListener('click', (e) => {
+    e.preventDefault();
+    const newFormClass = document.querySelector('#newForm');
+    if (newFormClass == null) {
+        nextModale();
+    } else {
+    showImage();
+    
+    const valider = document.querySelector('.valider');
+    valider.addEventListener('click', (e) => {
+        e.preventDefault();
+        const newFormClass = document.querySelector('#newForm');
         const token = localStorage.getItem('token');
+        const formData = new FormData(newFormClass);
+        const valueImage = formData.get('image');
+        const valueTitle = formData.get('title');
+        const valueCategory = formData.get('category');
+        console.log('form', {valueImage, valueTitle, valueCategory});
 
-        const modifPhoto = document.querySelector('.modifPhoto');
-        const image =  modifPhoto.getAttribute('src', 'alt');
-        const title = document.getElementById('title').value;
-        const category = document.getElementById('category').value;
+        const modale = document.getElementById('modale');
+        const body = document.querySelector('body')
+        modale.style.display = 'none';
+        body.style.backgroundColor = 'white;';
 
-        console.log("valeur", {image, title, category});
-        const valeurFinal = {
-            image,
-            title,
-            category
-        }
-
-        console.log(valeurFinal);
-
-        fetch('http://localhost:5678/api/works', {
+            fetch('http://localhost:5678/api/works', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                body: valeurFinal,
+                body: formData,
             })
                 .then(res => res.json())
-                .then(res => console.log(res))        
-    })
-    clickArrow.style.display = 'flex'
-})
+                .then(res => console.log(res))
+            })
+        }
 
-// buttonAjout.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     //const newFormClass = document.querySelector('#newForm');
-//     const inModale = document.querySelector('.inModale');
-//     if (inModale == null) {
-//         nextModale();
-//     } else {
-//     //const newFormClass = document.querySelector('#newForm');
-//     //newFormClass.addEventListener('click', (e) => {
-//         e.preventDefault();
-//         // const token = localStorage.getItem('token');
-//         // const formData = new FormData(newFormClass);
-//         // const valueImage = formData.get('image');
-//         // const valueTitle = formData.get('title');
-//         // const valueCategory = formData.get('category');
-//         // console.log('form', {valueImage, valueTitle, valueCategory});
-
-//         // const valueImage = document.querySelector('.labelFile').value;
-//         // const valueTitle = document.getElementById('valueTitle').value;
-//         // const valueCategory = document.getElementById('valueCategory').value;
-
-//         const modale = document.getElementById('modale');
-//         const body = document.querySelector('body')
-//         modale.style.display = 'none';
-//         body.style.backgroundColor = 'white;';
-
-//             fetch('http://localhost:5678/api/works', {
-//                 method: 'POST',
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//                 body: inModale,
-//             })
-//                 .then(res => res.json())
-//                 .then(res => console.log(res))
-//         }
-
-//     clickArrow.style.display = 'flex'
-//     }
-// )
+    //clickArrow.style.display = 'flex'
+    return false;
+}
+)
 
 const valueCategory = document.querySelector('.valueCategory');
 
@@ -285,14 +317,14 @@ clickArrow.addEventListener('click', () => {
     const buttonValider = document.querySelector('.valider');
     buttonValider.remove();
     inModale.appendChild(buttonAjout);
-    // buttonAjout.classList.remove('valider')
-    // buttonAjout.classList.add('buttonAjout');
+    buttonAjout.classList.remove('valider')
+    buttonAjout.classList.add('buttonAjout');
     modaleElement.classList.remove('modaleElementAjout');
     modaleElement.classList.add('modaleElement');
 
     //supprimer form newForm pour re afficher la div inModale
-    // const newFormClass = document.querySelector('#newForm');
-    // newFormClass.remove();
+    const newFormClass = document.querySelector('#newForm');
+    newFormClass.remove();
     modaleElement.appendChild(inModale);
 })
 

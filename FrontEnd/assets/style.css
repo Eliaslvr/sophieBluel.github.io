@@ -494,3 +494,12 @@ input[type="file"] {
 	width: 42%;
     height: 100%;
 }
+.select {
+	width: 87%;
+    box-sizing: border-box;
+    padding: 15px;
+    margin-top: 12px;
+    border: 1px solid white;
+    border-radius: 4px;
+    box-shadow: 2px 3px 21px 3px #ebe8e8;
+}
