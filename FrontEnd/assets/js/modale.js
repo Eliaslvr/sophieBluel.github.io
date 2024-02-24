@@ -52,6 +52,12 @@ async function buildGalleryModale() {
                 <img src=${affiche.imageUrl} alt=${affiche.title}>
             </figure>`
        }
+    //    document.addEventListener('click', function(event) {
+    //     let modaleElement = document.querySelector('.modaleElement');
+    //     if (event.target !== modaleElement && !modaleElement.contains(event.target)) {
+    //       modaleElement.style.display = "none";
+    //     }
+    // });
        fetchBin();
     }
 };
@@ -69,12 +75,13 @@ modify.addEventListener("click", () => {
     buttonModale();
 })
 
+
 async function fetchBin() {
     const bin = document.querySelectorAll('span.bin');
-    const token = localStorage.getItem('token');
     bin.forEach(trash => {
         trash.addEventListener('click', async (e) => {
             e.preventDefault();
+            const token = localStorage.getItem('token');
             const dataId = trash.getAttribute('data-id');
             console.log(dataId);
 
@@ -82,28 +89,28 @@ async function fetchBin() {
                     method: 'DELETE',
                     headers: {
                     Authorization: `Bearer ${token}`,
-                    //'Content-Type': 'application/json'
                     }
                 }
-                
+
             await fetch(`http://localhost:5678/api/works/${dataId}`, init)
             .then(response => {
-                response.json()})
+                response.json()
+                buildGalleryModale();  
             })
+            let figure = document.querySelector(`figure[data-figure-id="${dataId}"]`);
+            figure.remove();
+            console.log(figure);  
         })
-        return false;
-    }
+    })
+}
 
 const clickArrow = document.createElement('a');
 
 function nextModale() {
-    const newForm = document.createElement('form');
-    newForm.id = 'newForm'
-    // newForm.classList.add('newForm');
-    modaleElement.appendChild(newForm)
-    newForm.appendChild(inModale);
+    //const newForm = document.createElement('form');
+    //newForm.id = 'newForm'
+    // modaleElement.appendChild(newForm)
     // newForm.appendChild(inModale);
-    //document.body.appendChild(newForm);
 
     inModale.appendChild(clickArrow);
     const arrowLeft = document.createElement('i');
@@ -124,34 +131,18 @@ function nextModale() {
                                 </div>
                                 <div class='emplacement'>
                                     <p>Catégorie</p>
-                                    <label type="text" id='category' name='category'>
-                                    <select class="select" name="select">
+                                    <label type="text" id='category' >
+                                    <select class="select" name='category'>
                                         <option value=""></option>
-                                        <option value="objets" id="1">Objets</option>
-                                        <option value="appartements" id="2">Appartements</option>
-                                        <option value="hotel" id="3">Hotels & restaurants</option>
+                                        <option value="1">Objets</option>
+                                        <option value="2">Appartements</option>
+                                        <option value="3">Hotels & restaurants</option>
                                     </select>
                                 </div>`
-    //buttonAjout.remove()
     buttonAjout.innerHTML = 'Valider';
     buttonAjout.classList.remove('buttonAjout');
     buttonAjout.classList.add('valider');
-    // buttonAjout.setAttribute("type", "button");
-    // const deroulant = document.querySelector('.deroulant');
-    // deroulant.style.display = 'none';
-    //const buttonValider = document.createElement('button');
-    // buttonValider.classList.add('valider');
-    // buttonValider.innerHTML = 'valider'
-    // inModale.appendChild(buttonValider);
 }
-
-// buttonAjout.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     nextModale();
-
-//     const ajoutPhoto = document.querySelector('.ajoutPhoto');
-//     const image = document.getElementById('image');
-
 //     //onchange se produit lorsque la valeur de l'HTML est modifiée
 //     image.onchange = function(e) {
 //         //"file" fournit des informations sur les fichiers et permet à JavaScript dans une page Web d'accéder à son contenu.
@@ -172,47 +163,16 @@ function nextModale() {
 //         reader.readAsDataURL(file);
 //     }
 
-//     const buttonValider = document.querySelector('.valider');
-
-//     buttonValider.addEventListener('click', () => {
-//         const token = localStorage.getItem('token');
-
-//         const modifPhoto = document.querySelector('.modifPhoto');
-//         const image =  modifPhoto.getAttribute('src', 'alt');
-//         const title = document.getElementById('title').value;
-//         const category = document.getElementById('category').value;
-
-//         console.log("valeur", {image, title, category});
-//         const valeurFinal = {
-//             image,
-//             title,
-//             category
-//         }
-
-//         console.log(valeurFinal);
-
-//         fetch('http://localhost:5678/api/works', {
-//                 method: 'POST',
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//                 body: JSON.stringify({
-//                     image: image,
-//                     title: title,
-//                     category: category
-//                 }),
-//             })
-//                 .then(res => res.json())
-//                 .then(res => console.log(res))        
-//     })
-//     clickArrow.style.display = 'flex'
-// })
-
-function showImage() {
-    const ajoutPhoto = document.querySelector('.ajoutPhoto');
-    console.log(ajoutPhoto);
+buttonAjout.addEventListener('click', (e) => {
+    e.preventDefault();
+    // const newFormClass = document.querySelector('#newForm');
+    // if (newFormClass == null) {
+    //     nextModale();
+    // } else {
+    //showImage();
+    nextModale();
+    const ajoutPhoto = document.querySelector(".ajoutPhoto");
     const image = document.getElementById('image');
-    console.log(image);
 
     //onchange se produit lorsque la valeur de l'HTML est modifiée
     image.onchange = function(e) {
@@ -233,80 +193,82 @@ function showImage() {
 
         reader.readAsDataURL(file);
     }
-}
-
-buttonAjout.addEventListener('click', (e) => {
-    e.preventDefault();
-    const newFormClass = document.querySelector('#newForm');
-    if (newFormClass == null) {
-        nextModale();
-    } else {
-    showImage();
     
     const valider = document.querySelector('.valider');
-    valider.addEventListener('click', (e) => {
+    valider.addEventListener('click', async (e) => {
         e.preventDefault();
-        const newFormClass = document.querySelector('#newForm');
+        //const newFormClass = document.querySelector('#newForm');
         const token = localStorage.getItem('token');
-        const formData = new FormData(newFormClass);
-        const valueImage = formData.get('image');
-        const valueTitle = formData.get('title');
-        const valueCategory = formData.get('category');
-        console.log('form', {valueImage, valueTitle, valueCategory});
+        const formData = new FormData();
+        const image = document.getElementById('image');
+        console.log(image);
+        let title = document.querySelector('#title');
+        let category = document.querySelector('.select');
 
-        const modale = document.getElementById('modale');
-        const body = document.querySelector('body')
-        modale.style.display = 'none';
-        body.style.backgroundColor = 'white;';
+        formData.append('image', image.value);
+        formData.append('title', title.value);
+        formData.append('category', category.value);
 
-            fetch('http://localhost:5678/api/works', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
+        formData.get('image');
+        formData.get('title');
+        formData.get('category');
+
+        // const valueImage = formData.get('image');
+        // const valueTitle = formData.get('title');
+        // const valueCategory = formData.get('category');
+        // console.log('form', {valueImage, valueTitle, valueCategory});
+
+    //     // const modale = document.getElementById('modale');
+    //     // const body = document.querySelector('body')
+    //     // modale.style.display = 'none';
+    //     // body.style.backgroundColor = 'white;';
+
+        fetch('http://localhost:5678/api/works', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        })
+            .then(res => {
+                res.json()
+                buildGalleryModale();
             })
-                .then(res => res.json())
-                .then(res => console.log(res))
-            })
-        }
+
+            // let gallery = document.querySelector('.gallery');
+            //     gallery.innerHTML += 
+            //     `<figure data-figure-id="1">
+            //         <div data-category=${valueCategory}></div>
+            //         <img src=${valueImage} alt=${valueImage}>
+            //         <figcaption>${valueTitle}</figcaption>
+            //     </figure>`
+            // let figure = document.querySelector(`figure[data-figure-id="1"]`);
+            // console.log(figure);  
+
+        titleInModale();
+        buildGalleryModale();
+        buttonModale();
+        clickArrow.style.display = 'none';
+
+        const buttonValider = document.querySelector('.valider');
+        buttonValider.remove();
+        inModale.appendChild(buttonAjout);
+        buttonAjout.classList.remove('valider')
+        buttonAjout.classList.add('buttonAjout');
+        modaleElement.classList.remove('modaleElementAjout');
+        modaleElement.classList.add('modaleElement');
+
+        //supprimer form newForm pour re afficher la div inModale
+        //newFormClass.remove();
+        modaleElement.appendChild(inModale);
+        })
+
+    }
 
     //clickArrow.style.display = 'flex'
-    return false;
-}
 )
 
 const valueCategory = document.querySelector('.valueCategory');
-
-// function toggleDropdown(){
-//     const deroulant = document.querySelector('.deroulant');
-//     if (deroulant.style.display = 'none') {
-//         deroulant.style.display = 'block';
-//     } else {
-//         deroulant.style.display = 'none'
-//     }
-// }
-
-        //const valider = document.querySelector('.valider');
-
-        // function addMovie(e) {
-        //     e.preventDefault();
-        //     const formData = new FormData(newFormClass);
-        //     console.log(formData);
-        //     const valueTitle = formData.get('valueTitle');
-        //     console.log(valueTitle);
-        // }
-
-        // const titleValue = document.querySelector('#valueTitle');
-        // const valueCategory = document.querySelector('#valueCategory');
-        
-        // valider.addEventListener('click', (e) => {
-        //     e.preventDefault();
-        //     const formData = new FormData(newFormClass);
-        // })
-    
-
-
 
 clickArrow.addEventListener('click', () => {
     titleInModale();
@@ -331,47 +293,30 @@ clickArrow.addEventListener('click', () => {
 const cross = document.querySelector('.cross');
 
 cross.addEventListener('click', () => {
+    titleInModale();
+    buildGalleryModale();
+    buttonModale();
+    clickArrow.style.display = 'none';
+
     const buttonValider = document.querySelector('.valider');
     buttonValider.remove();
     inModale.appendChild(buttonAjout);
-    //buttonAjout.classList.remove('valider')
-    //buttonAjout.classList.add('buttonAjout');
+    buttonAjout.classList.remove('valider')
+    buttonAjout.classList.add('buttonAjout');
     modaleElement.classList.remove('modaleElementAjout');
-    clickArrow.style.display = 'none';
+    modaleElement.classList.add('modaleElement');
 
-    // const newFormClass = document.querySelector('#newForm');
-    // newFormClass.remove();
+    //supprimer form newForm pour re afficher la div inModale
+    const newFormClass = document.querySelector('#newForm');
+    newFormClass.remove();
     modaleElement.appendChild(inModale);
 })
 
-// const newFormClass = document.querySelector('.newForm');
-// newFormClass.addEventListener('submit', addMovie);
-
-// function addMovie(e) {
-//     e.preventDefault();
-//     const formData = new FormData(newFormClass);
-//     const titleData = formData.get('title');
-//     console.log('title', titleData);
-// }
-
-
-// newFormClass.addEventListener('submit', (e) => {
-//     e.preventDefault();
-//     const valueTitle = document.querySelector('.valueTitle').value
-//     console.log(valueTitle);
-// })
-
-
-
-
-
-
-
-// form.addEventListener('submit', (e) => {
-//     e.preventDefault();
-//     const titleValue = document.querySelector('valueTitle').value;
-//     const valueCategory = document.querySelector('valueCategory').value;
+// document.addEventListener('click', function(event) {
+//     let modaleElement = document.querySelector('.modaleElement');
+//     if (event.target !== modaleElement && !modaleElement.contains(event.target)) {
+//       modaleElement.style.display = "none";
+//     }
 // });
-
 
 

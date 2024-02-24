@@ -12,7 +12,7 @@ async function buildGallery(works) {
 
    for(let affiche of works) {
     gallery().innerHTML += 
-    `<figure>
+    `<figure data-figure-id=${affiche.id}>
         <div data-category=${affiche.categoryId}></div>
         <img src=${affiche.imageUrl} alt=${affiche.title}>
         <figcaption>${affiche.title}</figcaption>
@@ -71,17 +71,7 @@ if (token) {
     const main = document.querySelector('main');
     const footer = document.querySelector('footer');
     const body = document.querySelector('body');
-    // let figure = document.querySelectorAll('figure');
-    // const images = document.querySelectorAll('img');
 
-    // figure.forEach(figures => {
-    //     console.log(figures);
-    // })
-
-    // images.forEach(image => {
-    //     console.log(image);
-    // })
-    
     
     body.style = 'max-width: none; background-color: white;';
     header.style = 'max-width: 1140px; margin: 50px auto;';
@@ -99,9 +89,14 @@ if (token) {
         if (modale) {
             modale.style.display = null
             body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
-            
+            const images = document.querySelectorAll('img');
+            images.forEach(image => {
+                image.style.filter = 'brightness(0.5)';
+                image.style.zIndex = '1';
+            });
         } else {
             body.style = 'background-color: white;';
+            image.style.filter = 'none';
         }
     }) 
     
@@ -113,10 +108,16 @@ if (token) {
         modale.style.display = 'none';
         body.style = 'max-width: none;';
         body.style.backgroundColor = 'white;';
+        const images = document.querySelectorAll('img');
+            images.forEach(image => {
+                image.style.filter = 'none';
+                image.style.zIndex = '1';
+            });
     })
     
     // window.addEventListener('click', function (event) {
-    //     let modaleElement = document.querySelector('.modaleElement')
+    //     let modaleElement = document.querySelector('.modaleElement');
+    //     const images = document.querySelectorAll('img');
     //     // event.preventDefault();
     //     // if (event.target == modale) {
     //     //     modale.style.display = 'none';
@@ -124,9 +125,13 @@ if (token) {
     //     // } else {
     //     //     body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
     //     // }
-    //     if (event.target == modaleElement) {
+    //     if (event.target != modaleElement) {
     //         modale.style.display = 'none';
     //         body.style = 'max-width: none; background-color: white;';
+    //         images.forEach(image => {
+    //             image.style.filter = 'none';
+    //             image.style.zIndex = '1';
+    //         });
     //     }
     // });
 
