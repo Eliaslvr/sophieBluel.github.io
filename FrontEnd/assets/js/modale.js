@@ -121,13 +121,13 @@ function nextModale() {
 
     blockInModale.innerHTML = `<div class='ajoutPhoto'>
                                     <i class='far fa-image'></i>
-                                    <input type='file' id='image' name='image'>
+                                    <input type='file' id='image' class='imageValue' name='image'>
                                         <label class='labelFile' for="image">+ Ajouter photo</label>
-                                    <p>jpg, png : 4mo max</p>
+                                    <p class='paraInput'>jpg, png : 4mo max</p>
                                 </div>
                                 <div class='emplacement'>
                                     <p>Titre</p>
-                                    <input type="text" id='title' name='title'>
+                                    <input type="text" id='titleValue' name='title'>
                                 </div>
                                 <div class='emplacement'>
                                     <p>Catégorie</p>
@@ -164,7 +164,7 @@ function nextModale() {
 //     }
 
 buttonAjout.addEventListener('click', (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     // const newFormClass = document.querySelector('#newForm');
     // if (newFormClass == null) {
     //     nextModale();
@@ -173,6 +173,9 @@ buttonAjout.addEventListener('click', (e) => {
     nextModale();
     const ajoutPhoto = document.querySelector(".ajoutPhoto");
     const image = document.getElementById('image');
+    const iconeImage = document.querySelector('.fa-image');
+    const labelFile = document.querySelector('.labelFile');
+    const paraInput = document.querySelector('.paraInput')
 
     //onchange se produit lorsque la valeur de l'HTML est modifiée
     image.onchange = function(e) {
@@ -182,7 +185,9 @@ buttonAjout.addEventListener('click', (e) => {
         const reader = new FileReader();
 
         reader.onload = function(e) {
-            ajoutPhoto.innerHTML = '';
+            iconeImage.style.display = 'none';
+            labelFile.style.display = 'none';
+            paraInput.style.display = 'none';
             const modifPhoto = document.createElement('img');
             modifPhoto.classList.add('modifPhoto');
             ajoutPhoto.appendChild(modifPhoto)
@@ -193,6 +198,8 @@ buttonAjout.addEventListener('click', (e) => {
 
         reader.readAsDataURL(file);
     }
+    const imageSelect = document.querySelector('.modifPhoto');
+    console.log(imageSelect);
     
     const valider = document.querySelector('.valider');
     valider.addEventListener('click', async (e) => {
@@ -200,28 +207,28 @@ buttonAjout.addEventListener('click', (e) => {
         //const newFormClass = document.querySelector('#newForm');
         const token = localStorage.getItem('token');
         const formData = new FormData();
-        const image = document.getElementById('image');
-        console.log(image);
-        let title = document.querySelector('#title');
+        const imageSelect = document.querySelector('.modifPhoto');
+        if (imageSelect) {
+            console.log(imageSelect);
+        } else {
+            alert('aa')
+        }
+
+        let title = document.getElementById('titleValue');
         let category = document.querySelector('.select');
 
-        formData.append('image', image.value);
+        console.log(title.value);
+
+        formData.append('imageUrl', imageSelect.currentSrc);
         formData.append('title', title.value);
         formData.append('category', category.value);
 
-        formData.get('image');
-        formData.get('title');
-        formData.get('category');
-
+        // console.log(formData.get('image'));
+        // console.log(formData.append('title'));
         // const valueImage = formData.get('image');
         // const valueTitle = formData.get('title');
         // const valueCategory = formData.get('category');
         // console.log('form', {valueImage, valueTitle, valueCategory});
-
-    //     // const modale = document.getElementById('modale');
-    //     // const body = document.querySelector('body')
-    //     // modale.style.display = 'none';
-    //     // body.style.backgroundColor = 'white;';
 
         fetch('http://localhost:5678/api/works', {
             method: 'POST',
@@ -285,8 +292,8 @@ clickArrow.addEventListener('click', () => {
     modaleElement.classList.add('modaleElement');
 
     //supprimer form newForm pour re afficher la div inModale
-    const newFormClass = document.querySelector('#newForm');
-    newFormClass.remove();
+    // const newFormClass = document.querySelector('#newForm');
+    // newFormClass.remove();
     modaleElement.appendChild(inModale);
 })
 
