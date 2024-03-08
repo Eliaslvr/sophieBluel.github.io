@@ -140,8 +140,13 @@ function nextModale() {
                                     </select>
                                 </div>`
     buttonAjout.innerHTML = 'Valider';
-    buttonAjout.classList.remove('buttonAjout');
-    buttonAjout.classList.add('valider');
+    // buttonAjout.classList.remove('buttonAjout');
+    // buttonAjout.classList.add('valider');
+    buttonAjout.remove();
+    const valider = document.createElement('button');
+    valider.classList.add('valider');
+    inModale.appendChild(valider);
+    valider.innerHTML = 'Valider'
 }
 //     //onchange se produit lorsque la valeur de l'HTML est modifiée
 //     image.onchange = function(e) {
@@ -185,9 +190,13 @@ buttonAjout.addEventListener('click', (e) => {
         const reader = new FileReader();
 
         reader.onload = function(e) {
-            iconeImage.style.display = 'none';
-            labelFile.style.display = 'none';
-            paraInput.style.display = 'none';
+            // iconeImage.style.display = 'none';
+            iconeImage.remove();
+            // labelFile.style.display = 'none';
+            labelFile.remove();
+            // paraInput.style.display = 'none';
+            paraInput.remove();
+
             const modifPhoto = document.createElement('img');
             modifPhoto.classList.add('modifPhoto');
             ajoutPhoto.appendChild(modifPhoto)
@@ -195,40 +204,40 @@ buttonAjout.addEventListener('click', (e) => {
             modifPhoto.alt = e.target.result;
             ajoutPhoto.style.padding = '0'
         };
-
         reader.readAsDataURL(file);
     }
-    const imageSelect = document.querySelector('.modifPhoto');
-    console.log(imageSelect);
-    
+
     const valider = document.querySelector('.valider');
-    valider.addEventListener('click', async (e) => {
+    valider.addEventListener('click', (e) => {
         e.preventDefault();
         //const newFormClass = document.querySelector('#newForm');
         const token = localStorage.getItem('token');
         const formData = new FormData();
-        const imageSelect = document.querySelector('.modifPhoto');
-        if (imageSelect) {
-            console.log(imageSelect);
-        } else {
-            alert('aa')
-        }
 
+        let imageSelect = document.getElementById('image');
         let title = document.getElementById('titleValue');
         let category = document.querySelector('.select');
 
+        console.log(imageSelect.value);
         console.log(title.value);
+        console.log(category.value);
 
-        formData.append('imageUrl', imageSelect.currentSrc);
+        formData.append('image', imageSelect.value);
         formData.append('title', title.value);
         formData.append('category', category.value);
 
-        // console.log(formData.get('image'));
-        // console.log(formData.append('title'));
-        // const valueImage = formData.get('image');
-        // const valueTitle = formData.get('title');
-        // const valueCategory = formData.get('category');
-        // console.log('form', {valueImage, valueTitle, valueCategory});
+        formData.get('image');
+        formData.get('title');
+        formData.get('category');
+
+        console.log(formData);
+
+    //     // console.log(formData.get('image'));
+    //     // console.log(formData.append('title'));
+    //     // const valueImage = formData.get('image');
+    //     // const valueTitle = formData.get('title');
+    //     // const valueCategory = formData.get('category');
+    //     // console.log('form', {valueImage, valueTitle, valueCategory});
 
         fetch('http://localhost:5678/api/works', {
             method: 'POST',
@@ -239,43 +248,43 @@ buttonAjout.addEventListener('click', (e) => {
         })
             .then(res => {
                 res.json()
-                buildGalleryModale();
+                //buildGalleryModale();
             })
 
-            // let gallery = document.querySelector('.gallery');
-            //     gallery.innerHTML += 
-            //     `<figure data-figure-id="1">
-            //         <div data-category=${valueCategory}></div>
-            //         <img src=${valueImage} alt=${valueImage}>
-            //         <figcaption>${valueTitle}</figcaption>
-            //     </figure>`
-            // let figure = document.querySelector(`figure[data-figure-id="1"]`);
-            // console.log(figure);  
+    //         // let gallery = document.querySelector('.gallery');
+    //         //     gallery.innerHTML += 
+    //         //     `<figure data-figure-id="1">
+    //         //         <div data-category=${valueCategory}></div>
+    //         //         <img src=${valueImage} alt=${valueImage}>
+    //         //         <figcaption>${valueTitle}</figcaption>
+    //         //     </figure>`
+    //         // let figure = document.querySelector(`figure[data-figure-id="1"]`);
+    //         // console.log(figure);  
 
-        titleInModale();
-        buildGalleryModale();
-        buttonModale();
-        clickArrow.style.display = 'none';
+        // titleInModale();
+        // buildGalleryModale();
+        // buttonModale();
+        // clickArrow.style.display = 'none';
 
-        const buttonValider = document.querySelector('.valider');
-        buttonValider.remove();
-        inModale.appendChild(buttonAjout);
-        buttonAjout.classList.remove('valider')
-        buttonAjout.classList.add('buttonAjout');
-        modaleElement.classList.remove('modaleElementAjout');
-        modaleElement.classList.add('modaleElement');
+        // const buttonValider = document.querySelector('.valider');
+        // buttonValider.remove();
+        // inModale.appendChild(buttonAjout);
+        // buttonAjout.classList.remove('valider')
+        // buttonAjout.classList.add('buttonAjout');
+        // modaleElement.classList.remove('modaleElementAjout');
+        // modaleElement.classList.add('modaleElement');
 
-        //supprimer form newForm pour re afficher la div inModale
-        //newFormClass.remove();
-        modaleElement.appendChild(inModale);
-        })
-
-    }
+    //     //supprimer form newForm pour re afficher la div inModale
+    //     //newFormClass.remove();
+    //     //modaleElement.appendChild(inModale);
+         })
+     }
+    
 
     //clickArrow.style.display = 'flex'
 )
 
-const valueCategory = document.querySelector('.valueCategory');
+//const valueCategory = document.querySelector('.valueCategory');
 
 clickArrow.addEventListener('click', () => {
     titleInModale();
