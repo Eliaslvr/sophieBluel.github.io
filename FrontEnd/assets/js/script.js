@@ -2,6 +2,7 @@ const gallery = () =>  document.querySelector('.gallery');
 
 async function fetchWorks() {
     let response = await fetch("http://localhost:5678/api/works")
+    //JSON sert a convertir une valeur js en chaine JSON
     return await response.json();
 }
 
@@ -88,6 +89,7 @@ if (token) {
         e.preventDefault();   
         if (modale) {
             modale.style.display = null
+            modale.id = 'modaleClick'
             body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
             const images = document.querySelectorAll('img');
             images.forEach(image => {
@@ -114,26 +116,6 @@ if (token) {
                 image.style.zIndex = '1';
             });
     })
-    
-    // window.addEventListener('click', function (event) {
-    //     let modaleElement = document.querySelector('.modaleElement');
-    //     const images = document.querySelectorAll('img');
-    //     // event.preventDefault();
-    //     // if (event.target == modale) {
-    //     //     modale.style.display = 'none';
-    //     //     body.style = 'max-width: none; background-color: white;';
-    //     // } else {
-    //     //     body.style = 'max-width: none; background-color: rgba(0, 0, 0, 0.3);';
-    //     // }
-    //     if (event.target != modaleElement) {
-    //         modale.style.display = 'none';
-    //         body.style = 'max-width: none; background-color: white;';
-    //         images.forEach(image => {
-    //             image.style.filter = 'none';
-    //             image.style.zIndex = '1';
-    //         });
-    //     }
-    // });
 
     document.querySelector('.projets').style = 'display: none;'
 

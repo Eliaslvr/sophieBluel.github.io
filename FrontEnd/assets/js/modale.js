@@ -21,10 +21,6 @@ let blockInModale = document.createElement('div');
 blockInModale.classList.add('blockInModale');
 inModale.appendChild(blockInModale)
 
-//Creation du boutton
-// let buttonInModale = document.createElement('div');
-// buttonInModale.classList.add('buttonInModale');
-// inModale.appendChild(buttonInModale);
 let buttonAjout = document.createElement('button');
 buttonAjout.classList.add('buttonAjout');
 inModale.appendChild(buttonAjout);
@@ -52,12 +48,6 @@ async function buildGalleryModale() {
                 <img src=${affiche.imageUrl} alt=${affiche.title}>
             </figure>`
        }
-    //    document.addEventListener('click', function(event) {
-    //     let modaleElement = document.querySelector('.modaleElement');
-    //     if (event.target !== modaleElement && !modaleElement.contains(event.target)) {
-    //       modaleElement.style.display = "none";
-    //     }
-    // });
        fetchBin();
     }
 };
@@ -93,10 +83,7 @@ async function fetchBin() {
                 }
 
             await fetch(`http://localhost:5678/api/works/${dataId}`, init)
-            .then(response => {
-                response.json()
-                buildGalleryModale();  
-            })
+            buildGalleryModale();  
             let figure = document.querySelector(`figure[data-figure-id="${dataId}"]`);
             figure.remove();
             console.log(figure);  
@@ -107,16 +94,19 @@ async function fetchBin() {
 const clickArrow = document.createElement('a');
 
 function nextModale() {
-    //const newForm = document.createElement('form');
-    //newForm.id = 'newForm'
-    // modaleElement.appendChild(newForm)
-    // newForm.appendChild(inModale);
 
+    const arrow = document.querySelector('.arrow')
+    console.log(arrow);
+    if(arrow) {
+        arrow.style.display = 'initial'
+    } else {
     inModale.appendChild(clickArrow);
     const arrowLeft = document.createElement('i');
     arrowLeft.classList.add('fas','fa-arrow-left', 'arrow');
     clickArrow.appendChild(arrowLeft);
-    modale.insertBefore(clickArrow, modale.firstChild)
+    modaleClick.insertBefore(clickArrow, modaleClick.firstChild)
+    }
+    
     titleModale.innerHTML = 'Ajout photo';
 
     blockInModale.innerHTML = `<div class='ajoutPhoto'>
@@ -140,41 +130,14 @@ function nextModale() {
                                     </select>
                                 </div>`
     buttonAjout.innerHTML = 'Valider';
-    // buttonAjout.classList.remove('buttonAjout');
-    // buttonAjout.classList.add('valider');
     buttonAjout.remove();
     const valider = document.createElement('button');
     valider.classList.add('valider');
     inModale.appendChild(valider);
     valider.innerHTML = 'Valider'
 }
-//     //onchange se produit lorsque la valeur de l'HTML est modifiée
-//     image.onchange = function(e) {
-//         //"file" fournit des informations sur les fichiers et permet à JavaScript dans une page Web d'accéder à son contenu.
-//         const file = e.target.files[0];
-//         //FileReader permet à des applications web de lire le contenu de fichiers 
-//         const reader = new FileReader();
-
-//         reader.onload = function(e) {
-//             ajoutPhoto.innerHTML = '';
-//             const modifPhoto = document.createElement('img');
-//             modifPhoto.classList.add('modifPhoto');
-//             ajoutPhoto.appendChild(modifPhoto)
-//             modifPhoto.src = e.target.result;
-//             modifPhoto.alt = e.target.result;
-//             ajoutPhoto.style.padding = '0'
-//         };
-
-//         reader.readAsDataURL(file);
-//     }
 
 buttonAjout.addEventListener('click', (e) => {
-    //e.preventDefault();
-    // const newFormClass = document.querySelector('#newForm');
-    // if (newFormClass == null) {
-    //     nextModale();
-    // } else {
-    //showImage();
     nextModale();
     const ajoutPhoto = document.querySelector(".ajoutPhoto");
     const image = document.getElementById('image');
@@ -190,11 +153,8 @@ buttonAjout.addEventListener('click', (e) => {
         const reader = new FileReader();
 
         reader.onload = function(e) {
-            // iconeImage.style.display = 'none';
             iconeImage.remove();
-            // labelFile.style.display = 'none';
             labelFile.remove();
-            // paraInput.style.display = 'none';
             paraInput.remove();
 
             const modifPhoto = document.createElement('img');
@@ -210,7 +170,6 @@ buttonAjout.addEventListener('click', (e) => {
     const valider = document.querySelector('.valider');
     valider.addEventListener('click', (e) => {
         e.preventDefault();
-        //const newFormClass = document.querySelector('#newForm');
         const token = localStorage.getItem('token');
         const formData = new FormData();
 
@@ -222,7 +181,7 @@ buttonAjout.addEventListener('click', (e) => {
         console.log(title.value);
         console.log(category.value);
 
-        formData.append('image', imageSelect.value);
+        formData.append('image', imageSelect.files[0]);
         formData.append('title', title.value);
         formData.append('category', category.value);
 
@@ -230,67 +189,46 @@ buttonAjout.addEventListener('click', (e) => {
         formData.get('title');
         formData.get('category');
 
-        console.log(formData);
-
-    //     // console.log(formData.get('image'));
-    //     // console.log(formData.append('title'));
-    //     // const valueImage = formData.get('image');
-    //     // const valueTitle = formData.get('title');
-    //     // const valueCategory = formData.get('category');
-    //     // console.log('form', {valueImage, valueTitle, valueCategory});
-
-        fetch('http://localhost:5678/api/works', {
+        if (imageSelect.value == '' || title.value =="" || category.value == '') {
+            alert('aa')
+        } else {
+            fetch('http://localhost:5678/api/works', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
             body: formData,
         })
-            .then(res => {
+            .then(async res => {
                 res.json()
-                //buildGalleryModale();
+                works = await fetchWorks()
+                buildGallery(works)
             })
 
-    //         // let gallery = document.querySelector('.gallery');
-    //         //     gallery.innerHTML += 
-    //         //     `<figure data-figure-id="1">
-    //         //         <div data-category=${valueCategory}></div>
-    //         //         <img src=${valueImage} alt=${valueImage}>
-    //         //         <figcaption>${valueTitle}</figcaption>
-    //         //     </figure>`
-    //         // let figure = document.querySelector(`figure[data-figure-id="1"]`);
-    //         // console.log(figure);  
+        titleInModale();
+        buildGalleryModale();
+        buttonModale();
+        clickArrow.style.display = 'none';
 
-        // titleInModale();
-        // buildGalleryModale();
-        // buttonModale();
-        // clickArrow.style.display = 'none';
-
-        // const buttonValider = document.querySelector('.valider');
-        // buttonValider.remove();
-        // inModale.appendChild(buttonAjout);
-        // buttonAjout.classList.remove('valider')
-        // buttonAjout.classList.add('buttonAjout');
-        // modaleElement.classList.remove('modaleElementAjout');
-        // modaleElement.classList.add('modaleElement');
-
-    //     //supprimer form newForm pour re afficher la div inModale
-    //     //newFormClass.remove();
-    //     //modaleElement.appendChild(inModale);
-         })
+        const buttonValider = document.querySelector('.valider');
+        buttonValider.remove();
+        inModale.appendChild(buttonAjout);
+        buttonAjout.classList.remove('valider')
+        buttonAjout.classList.add('buttonAjout');
+        modaleElement.classList.remove('modaleElementAjout');
+        modaleElement.classList.add('modaleElement');
+        }
+        })
      }
-    
-
-    //clickArrow.style.display = 'flex'
 )
 
-//const valueCategory = document.querySelector('.valueCategory');
 
 clickArrow.addEventListener('click', () => {
     titleInModale();
     buildGalleryModale();
     buttonModale();
-    clickArrow.style.display = 'none';
+    const arrow = document.querySelector('.arrow');
+    arrow.style.display = 'none';
     
     const buttonValider = document.querySelector('.valider');
     buttonValider.remove();
@@ -300,9 +238,6 @@ clickArrow.addEventListener('click', () => {
     modaleElement.classList.remove('modaleElementAjout');
     modaleElement.classList.add('modaleElement');
 
-    //supprimer form newForm pour re afficher la div inModale
-    // const newFormClass = document.querySelector('#newForm');
-    // newFormClass.remove();
     modaleElement.appendChild(inModale);
 })
 
@@ -321,18 +256,20 @@ cross.addEventListener('click', () => {
     buttonAjout.classList.add('buttonAjout');
     modaleElement.classList.remove('modaleElementAjout');
     modaleElement.classList.add('modaleElement');
-
-    //supprimer form newForm pour re afficher la div inModale
-    const newFormClass = document.querySelector('#newForm');
-    newFormClass.remove();
-    modaleElement.appendChild(inModale);
 })
 
-// document.addEventListener('click', function(event) {
-//     let modaleElement = document.querySelector('.modaleElement');
-//     if (event.target !== modaleElement && !modaleElement.contains(event.target)) {
-//       modaleElement.style.display = "none";
-//     }
-// });
-
+window.addEventListener('click', function (event) {
+    let modaleClick = document.getElementById('modaleClick')
+    const images = document.querySelectorAll('img');
+    const body = this.document.querySelector('body')
+    event.preventDefault();
+    if (event.target == modaleClick) {
+        modaleClick.style.display = 'none';
+        body.style = 'max-width: none; background-color: white;';
+            images.forEach(image => {
+            image.style.filter = 'none';
+            image.style.zIndex = '1';
+        });
+    } 
+});
 
