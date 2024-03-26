@@ -2,7 +2,7 @@ const gallery = () =>  document.querySelector('.gallery');
 
 async function fetchWorks() {
     let response = await fetch("http://localhost:5678/api/works")
-    //JSON sert a convertir une valeur js en chaine JSON
+    //JSON sert a convertir une valeur js en chaine JSON, et sert à échanger des données entre un serveur et un client
     return await response.json();
 }
 

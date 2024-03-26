@@ -31,6 +31,7 @@ function titleInModale() {
 }
 
 async function fetchWorksModale() {
+    //await bloque l'execution tant qu'il n'a pas recup le fetch
     let response = await fetch("http://localhost:5678/api/works")
     return await response.json();
 }
@@ -94,9 +95,8 @@ async function fetchBin() {
 const clickArrow = document.createElement('a');
 
 function nextModale() {
-
     const arrow = document.querySelector('.arrow')
-    console.log(arrow);
+    const modaleClick = document.getElementById('modaleClick')
     if(arrow) {
         arrow.style.display = 'initial'
     } else {
@@ -129,7 +129,6 @@ function nextModale() {
                                         <option value="3">Hotels & restaurants</option>
                                     </select>
                                 </div>`
-    buttonAjout.innerHTML = 'Valider';
     buttonAjout.remove();
     const valider = document.createElement('button');
     valider.classList.add('valider');
@@ -190,7 +189,7 @@ buttonAjout.addEventListener('click', (e) => {
         formData.get('category');
 
         if (imageSelect.value == '' || title.value =="" || category.value == '') {
-            alert('aa')
+            alert(`Veuillez sélectionner une image, un titre ainsi qu'une catgorie`)
         } else {
             fetch('http://localhost:5678/api/works', {
             method: 'POST',
@@ -209,14 +208,20 @@ buttonAjout.addEventListener('click', (e) => {
         buildGalleryModale();
         buttonModale();
         clickArrow.style.display = 'none';
+        modaleClick.id = 'modale'
 
         const buttonValider = document.querySelector('.valider');
+        const images = document.querySelectorAll('img');
+        const body = document.querySelector('body')
         buttonValider.remove();
         inModale.appendChild(buttonAjout);
         buttonAjout.classList.remove('valider')
         buttonAjout.classList.add('buttonAjout');
-        modaleElement.classList.remove('modaleElementAjout');
-        modaleElement.classList.add('modaleElement');
+        body.style = 'max-width: none; background-color: white;';
+        images.forEach(image => {
+            image.style.filter = 'none';
+            image.style.zIndex = '1';
+        });
         }
         })
      }
@@ -235,41 +240,46 @@ clickArrow.addEventListener('click', () => {
     inModale.appendChild(buttonAjout);
     buttonAjout.classList.remove('valider')
     buttonAjout.classList.add('buttonAjout');
-    modaleElement.classList.remove('modaleElementAjout');
-    modaleElement.classList.add('modaleElement');
-
     modaleElement.appendChild(inModale);
 })
 
 const cross = document.querySelector('.cross');
 
 cross.addEventListener('click', () => {
+    const arrow = document.querySelector('.arrow');
     titleInModale();
     buildGalleryModale();
     buttonModale();
-    clickArrow.style.display = 'none';
+    arrow.style.display = 'none';
 
     const buttonValider = document.querySelector('.valider');
     buttonValider.remove();
     inModale.appendChild(buttonAjout);
     buttonAjout.classList.remove('valider')
     buttonAjout.classList.add('buttonAjout');
-    modaleElement.classList.remove('modaleElementAjout');
-    modaleElement.classList.add('modaleElement');
 })
 
-window.addEventListener('click', function (event) {
+
+window.addEventListener('click', function(e) {
     let modaleClick = document.getElementById('modaleClick')
     const images = document.querySelectorAll('img');
-    const body = this.document.querySelector('body')
-    event.preventDefault();
-    if (event.target == modaleClick) {
-        modaleClick.style.display = 'none';
+    const body = document.querySelector('body');
+    const buttonValider = document.querySelector('.valider');
+    const arrow = document.querySelector('.arrow');
+    if (e.target == modaleClick) {
+        modaleClick.id = 'modale'
         body.style = 'max-width: none; background-color: white;';
-            images.forEach(image => {
+        images.forEach(image => {
             image.style.filter = 'none';
             image.style.zIndex = '1';
         });
-    } 
-});
+        buttonValider.remove();
+        inModale.appendChild(buttonAjout);
+        buttonAjout.classList.add('buttonAjout');
 
+        titleInModale();
+        buildGalleryModale();
+        buttonModale();
+        arrow.style.display = 'none';
+    }
+})
