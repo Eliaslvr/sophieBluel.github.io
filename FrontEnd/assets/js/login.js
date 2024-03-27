@@ -47,8 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
         password: motDePasse,
     }
 
-    console.log(donneesFormulaire);
-
     const fetchAwait = await fetch('http://localhost:5678/api/users/login', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,8 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('token', token)
                 localStorage.getItem(token)
                 window.location.href = "../../index.html";
-            
-                // Faites ce que vous devez faire avec le token ici
             } 
         } else {
             let error = document.getElementById("error");

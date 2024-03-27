@@ -1,13 +1,17 @@
 const gallery = () =>  document.querySelector('.gallery');
 
 async function fetchWorks() {
+    //api permet l'intégration entre différentes applications ou services.
+    //async sert à effectuer des tâches sans bloquer l'execution
     let response = await fetch("http://localhost:5678/api/works")
     //JSON sert a convertir une valeur js en chaine JSON, et sert à échanger des données entre un serveur et un client
     return await response.json();
 }
 
 let works = [];
-
+/**
+ * function qui sert a afficher les element de l'api 
+ */
 async function buildGallery(works) {
     gallery().innerHTML = "";
 
@@ -26,6 +30,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     buildGallery(works)
 })
 
+/**
+ * function qui sert a filtrer les differentes categories
+ */
 async function setElement() {
     return await fetch("http://localhost:5678/api/categories")
     .then(data => data.json())
@@ -45,8 +52,7 @@ async function setElement() {
             objet.innerText = categorie.name;
             objet.setAttribute("data-id", categorie.id)            
             projet.appendChild(objet);
-               
-
+            
             objet.addEventListener("click", function() {
                 let affiche = works.filter(element => categorie.id == element.categoryId)
                 buildGallery(affiche)

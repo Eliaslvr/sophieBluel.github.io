@@ -36,6 +36,9 @@ async function fetchWorksModale() {
     return await response.json();
 }
 
+/**
+ * Element à afficher dans la modale
+ */
 async function buildGalleryModale() {
     let work = await fetchWorksModale()
     if (blockInModale) {
@@ -51,10 +54,13 @@ async function buildGalleryModale() {
        }
        fetchBin();
     }
+    const arrow = document.querySelector('.arrow');
+    if (arrow) {
+        arrow.style.display = 'none'
+    }
 };
 
-
- function buttonModale() {
+function buttonModale() {
     buttonAjout.innerHTML = 'Ajouter une photo'
 }
 
@@ -66,7 +72,9 @@ modify.addEventListener("click", () => {
     buttonModale();
 })
 
-
+/**
+ * Icone qui supprime les elements dans la modale
+ */
 async function fetchBin() {
     const bin = document.querySelectorAll('span.bin');
     bin.forEach(trash => {
@@ -94,7 +102,10 @@ async function fetchBin() {
 
 const clickArrow = document.createElement('a');
 
-function nextModale() {
+/**
+ * Modale qui s'affiche lors du click 'ajouter une photo' 
+ */
+async function nextModale() {
     const arrow = document.querySelector('.arrow')
     const modaleClick = document.getElementById('modaleClick')
     if(arrow) {
@@ -106,8 +117,11 @@ function nextModale() {
     clickArrow.appendChild(arrowLeft);
     modaleClick.insertBefore(clickArrow, modaleClick.firstChild)
     }
-    
     titleModale.innerHTML = 'Ajout photo';
+
+    await fetch("http://localhost:5678/api/categories")
+    .then(data => data.json())
+    .then(data => {
 
     blockInModale.innerHTML = `<div class='ajoutPhoto'>
                                     <i class='far fa-image'></i>
@@ -124,11 +138,16 @@ function nextModale() {
                                     <label type="text" id='category' >
                                     <select class="select" name='category'>
                                         <option value=""></option>
-                                        <option value="1">Objets</option>
-                                        <option value="2">Appartements</option>
-                                        <option value="3">Hotels & restaurants</option>
-                                    </select>
+                                    </select>   
                                 </div>`
+                                for(let categorie of data) {
+                                    const select = document.querySelector('.select')
+                                    let objet = document.createElement('option');
+                                    objet.innerText = categorie.name;
+                                    objet.setAttribute("value", categorie.id)            
+                                    select.appendChild(objet);
+                                }
+        })
     buttonAjout.remove();
     const valider = document.createElement('button');
     valider.classList.add('valider');
@@ -136,8 +155,11 @@ function nextModale() {
     valider.innerHTML = 'Valider'
 }
 
-buttonAjout.addEventListener('click', (e) => {
-    nextModale();
+
+/**
+ * Function qui sert à afficher l'image selectionné de l'input
+ */
+function onloadImage() {
     const ajoutPhoto = document.querySelector(".ajoutPhoto");
     const image = document.getElementById('image');
     const iconeImage = document.querySelector('.fa-image');
@@ -148,7 +170,12 @@ buttonAjout.addEventListener('click', (e) => {
     image.onchange = function(e) {
         //"file" fournit des informations sur les fichiers et permet à JavaScript dans une page Web d'accéder à son contenu.
         const file = e.target.files[0];
-        //FileReader permet à des applications web de lire le contenu de fichiers 
+        // Vérification de la taille du fichier
+        if (file.size > 4 * 1024 * 1024) {
+            alert(`L'image est trop grande (maximum 4 Mo) !`);
+            return;
+        } else {
+            //FileReader permet à des applications web de lire le contenu de fichiers 
         const reader = new FileReader();
 
         reader.onload = function(e) {
@@ -164,70 +191,76 @@ buttonAjout.addEventListener('click', (e) => {
             ajoutPhoto.style.padding = '0'
         };
         reader.readAsDataURL(file);
-    }
-
-    const valider = document.querySelector('.valider');
-    valider.addEventListener('click', (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem('token');
-        const formData = new FormData();
-
-        let imageSelect = document.getElementById('image');
-        let title = document.getElementById('titleValue');
-        let category = document.querySelector('.select');
-
-        console.log(imageSelect.value);
-        console.log(title.value);
-        console.log(category.value);
-
-        formData.append('image', imageSelect.files[0]);
-        formData.append('title', title.value);
-        formData.append('category', category.value);
-
-        formData.get('image');
-        formData.get('title');
-        formData.get('category');
-
-        if (imageSelect.value == '' || title.value =="" || category.value == '') {
-            alert(`Veuillez sélectionner une image, un titre ainsi qu'une catgorie`)
-        } else {
-            fetch('http://localhost:5678/api/works', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-        })
-            .then(async res => {
-                res.json()
-                works = await fetchWorks()
-                buildGallery(works)
-            })
-
-        titleInModale();
-        buildGalleryModale();
-        buttonModale();
-        clickArrow.style.display = 'none';
-        modaleClick.id = 'modale'
-
-        const buttonValider = document.querySelector('.valider');
-        const images = document.querySelectorAll('img');
-        const body = document.querySelector('body')
-        buttonValider.remove();
-        inModale.appendChild(buttonAjout);
-        buttonAjout.classList.remove('valider')
-        buttonAjout.classList.add('buttonAjout');
-        body.style = 'max-width: none; background-color: white;';
-        images.forEach(image => {
-            image.style.filter = 'none';
-            image.style.zIndex = '1';
-        });
         }
+    }
+}
+
+/**
+ * Bouton 'valider' qui va servir à enregistrer l'image, le titre et la categorie
+ */
+function valider() {
+    document.querySelector('.valider').addEventListener('click', (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+
+    let imageSelect = document.getElementById('image');
+    let title = document.getElementById('titleValue');
+    let category = document.querySelector('.select');
+
+    formData.append('image', imageSelect.files[0]);
+    formData.append('title', title.value);
+    formData.append('category', category.value);
+
+    formData.get('image');
+    formData.get('title');
+    formData.get('category');
+
+    if (imageSelect.value == '' || title.value =="" || category.value == '') {
+        alert(`Veuillez sélectionner une image, un titre ainsi qu'une catgorie`)
+    } else {
+        fetch('http://localhost:5678/api/works', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+    })
+        .then(async res => {
+            res.json()
+            works = await fetchWorks()
+            buildGallery(works)
         })
-     }
-)
 
+    titleInModale();
+    buildGalleryModale();
+    buttonModale();
+    modaleClick.id = 'modale'
 
+    const buttonValider = document.querySelector('.valider');
+    const images = document.querySelectorAll('img');
+    const body = document.querySelector('body')
+    buttonValider.remove();
+    inModale.appendChild(buttonAjout);
+    buttonAjout.classList.remove('valider')
+    buttonAjout.classList.add('buttonAjout');
+    body.style = 'max-width: none; background-color: white;';
+    images.forEach(image => {
+        image.style.filter = 'none';
+        image.style.zIndex = '1';
+    });
+    }
+})}
+
+buttonAjout.addEventListener('click', async (e) => {
+    await nextModale();
+    onloadImage();
+    valider();
+})
+
+/**
+ * Fleche qui reviens sur la premiere modale 
+ */
 clickArrow.addEventListener('click', () => {
     titleInModale();
     buildGalleryModale();
@@ -243,9 +276,10 @@ clickArrow.addEventListener('click', () => {
     modaleElement.appendChild(inModale);
 })
 
-const cross = document.querySelector('.cross');
-
-cross.addEventListener('click', () => {
+/**
+ * Croix qui sert a enlever la modale
+ */
+document.querySelector('.cross').addEventListener('click', () => {
     const arrow = document.querySelector('.arrow');
     titleInModale();
     buildGalleryModale();
@@ -259,7 +293,9 @@ cross.addEventListener('click', () => {
     buttonAjout.classList.add('buttonAjout');
 })
 
-
+/**
+ * Sert à supprimer la modale lorsque je click en dehors de la modale 
+ */
 window.addEventListener('click', function(e) {
     let modaleClick = document.getElementById('modaleClick')
     const images = document.querySelectorAll('img');
