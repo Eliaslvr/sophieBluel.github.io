@@ -47,7 +47,7 @@ async function buildGalleryModale() {
             blockInModale.innerHTML += 
             `<figure class='modaleElementAffiche'>
                 <span class='bin' data-id='${affiche.id}'>
-                    <i class='fas fa-dumpster'></i>
+                    <i class='fa-solid fa-trash-can'></i>
                 </span>
                 <img src=${affiche.imageUrl} alt=${affiche.title}>
             </figure>`
@@ -109,7 +109,7 @@ async function nextModale() {
     const arrow = document.querySelector('.arrow')
     const modaleClick = document.getElementById('modaleClick')
     if(arrow) {
-        arrow.style.display = 'initial'
+        arrow.style.display = '-çinitial'
     } else {
     inModale.appendChild(clickArrow);
     const arrowLeft = document.createElement('i');
